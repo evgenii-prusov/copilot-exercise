@@ -1,11 +1,31 @@
 // create web server
-var http = require('http');
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
 var fs = require('fs');
 
-// create server
-var server = http.createServer(function(req, res) {
-  console.log('request was made: ' + req.url);
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  var myReadStream = fs.createReadStream(__dirname + '/comments.html', 'utf8');
-  myReadStream.pipe(res);
+// create web server
+app.get('/', function(req, res) {
+    res.send('Hello World');
+});
+
+// create post request
+app.post('/comments', bodyParser.json(), function(req, res) {
+    var comments = fs.readFileSync('comments.json', 'utf8');
+    comments = JSON.parse(comments);
+    comments.push(req.body);
+    fs.writeFileSync('comments.json', JSON.stringify(comments));
+    res.send('Comment added');
+});
+
+// create get request
+app.get('/comments', function(req, res) {
+    var comments = fs.readFileSync('comments.json', 'utf8');
+    comments = JSON.parse(comments);
+    res.json(comments);
+});
+
+// start server
+app.listen(3000, function() {
+    console.log('Server is listening on port 3000');
 });
