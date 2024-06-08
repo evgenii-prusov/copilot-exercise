@@ -9,6 +9,3 @@ var server = http.createServer(function(req, res) {
   var myReadStream = fs.createReadStream(__dirname + '/comments.html', 'utf8');
   myReadStream.pipe(res);
 });
-
-// listen to port 3000
-server.listen(3000);
